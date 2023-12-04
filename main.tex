@@ -6,33 +6,89 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 
-\title{A Basic \LaTeX{} Article}
-\author{Your Name}
+\title{Seminar - Markowitz Portfolio Optimization}
+\author{PUJOL Martin \\ RAMPONT Martin \\ THOMASSIN Pablo \\ STRIEBIG Maximilien}
+
 \date{\today}
 
+\documentclass{article}
+
+\usepackage{amsmath}
+
 \begin{document}
+
 \maketitle
 
-\section{Introduction}
-This is a basic \LaTeX{} article.  It contains a title, author, and date.  It also contains a section.
+\section*{Theoretical Part}
 
-\section{Math}
-This is a basic math equation:
+\subsection*{Problem Description}
+
+In the realm of financial portfolio management, the Markowitz portfolio optimization problem is a classical and essential topic. The primary objective is to allocate weights to different assets in a portfolio to maximize the expected return while minimizing the overall portfolio risk. Let's consider a portfolio with $n$ assets. The goal is to find the optimal set of weights for these assets.
+
+\subsubsection*{Formalization}
+
+Let:
+\begin{align*}
+    r_i      & : \text{Expected return of asset } i                 \\
+    \sigma_i & : \text{Volatility (risk) of asset } i               \\
+    w_i      & : \text{Weight of asset } i \text{ in the portfolio} \\
+\end{align*}
+
+The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, w_n]$ that maximizes the expected portfolio return $\mu$ while minimizing the portfolio risk $\sigma_p$:
+
 \begin{equation}
-    \label{eq:1}
-    \frac{d}{dx} \left( \int_{0}^{x} f(u) du \right) = f(x)
-
+    \begin{aligned}
+        \text{Maximize} \quad   & \mu = \sum_{i=1}^{n} r_i w_i                                                                                     \\
+        \text{Subject to} \quad & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+                                & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                    \\
+                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
+    \end{aligned}
 \end{equation}
 
-\section{Figures}
-This is a basic figure:
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/figure1.png}
-    \caption{This is a basic figure.}
-    \label{fig:1}
+Where:
+\begin{align*}
+    \rho_{ij} & : \text{Correlation coefficient between assets } i \text{ and } j
+\end{align*}
 
-\end{figure}
+\section*{Numerical Part}
+
+\subsection*{Selected Optimization Methods}
+
+For solving the Markowitz portfolio optimization problem, we have chosen two numerical optimization methods:
+
+\begin{enumerate}
+    \item Method 1: [Insert Method 1 Name]
+    \item Method 2: [Insert Method 2 Name]
+\end{enumerate}
+
+\subsection*{Algorithm Implementation}
+
+Below are the basic functions describing the two chosen algorithms:
+
+\subsubsection*{Method 1: [Insert Method 1 Name]}
+
+[Insert code or pseudocode for Method 1 implementation]
+
+\subsubsection*{Method 2: [Insert Method 2 Name]}
+
+[Insert code or pseudocode for Method 2 implementation]
+
+\subsection*{Results and Analysis}
+
+We have applied both methods to the Markowitz portfolio optimization problem and obtained the following results:
+
+[Insert results, tables, or graphs]
+
+\subsubsection*{Interpretation}
+
+[Provide interpretation of the results]
+
+\subsubsection*{Comparison}
+
+To compare the two methods, we analyze factors such as computational time and the number of iterations:
+
+[Insert comparison results]
 
 \end{document}
+
 
