@@ -7,11 +7,10 @@
 \usepackage{graphicx}
 
 \title{Seminar - Markowitz Portfolio Optimization}
-\author{PUJOL Martin \\ RAMPONT Martin \\ THOMASSIN Pablo \\ STRIEBIG Maximilien}
+\author{tets Martin \\ RAMPONT Martin \\ THOMASSIN Pablo \\ STRIEBIG Maximilien}
 
 \date{\today}
 
-\documentclass{article}
 
 \usepackage{amsmath}
 
@@ -50,11 +49,86 @@ Where:
     \rho_{ij} & : \text{Correlation coefficient between assets } i \text{ and } j
 \end{align*}
 
+
+An other formulation of the problem is to minimize the portfolio risk $\sigma_p$ while achieving a target expected return $\mu$:
+
+The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, w_n]$ that minimizes the portfolio risk $\sigma_p$ while achieving a given expected portfolio return $\mu$:
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \mu = \sum_{i=1}^{n} r_i w_i \quad \text{(Expected portfolio return)}                                             \\
+                                & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                        \\
+                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
+    \end{aligned}
+\end{equation}
+
 \section*{Numerical Part}
 
 \subsection*{Selected Optimization Methods}
 
 For solving the Markowitz portfolio optimization problem, we have chosen two numerical optimization methods:
+
+% I want to use non-constraint optimization methods 
+% Fist let's forget about the Expected return constraint
+
+I order to simplify the problem, we will first forget about the expected return constraint. We will only focus on minimizing the portfolio risk $\sigma_p$.
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                        \\
+                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
+    \end{aligned}
+\end{equation}
+
+% To restruct the weight vector to be positive, we can use a variable change
+% w_i = exp(x_i) with x_i \in R
+
+To restruct the weight vector to be positive, we can use a variable change:
+\begin{equation}
+    w_i = e^{x_i} \quad \text{with} \quad x_i \in \mathbb{R}
+\end{equation}
+
+The problem becomes:
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
+    \end{aligned}
+\end{equation}
+
+We can also forget about the square root in the objective function, as it does not change the optimal solution.
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p^2 = \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
+    \end{aligned}
+\end{equation}
+
+Finally, we can inject the sum constraint into the objective function using a variable change: 
+$x_{n+1} = 1 - \sum_{i=1}^{n} x_i$.
+
+Or we can also use the softmax function to ensure that the sum of the weights equals 1, such as:
+
+\begin{equation}
+    w_i = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
+\end{equation}
+
+Leading to the following problem formulation (with softmax):
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p^2 = \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & x_i \in \mathbb{R} \quad \forall i \in \{1, \ldots, n\} \\
+    \end{aligned}
+\end{equation}
+
+
+
+
 
 \begin{enumerate}
     \item Method 1: [Insert Method 1 Name]
