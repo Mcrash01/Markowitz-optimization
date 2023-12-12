@@ -63,68 +63,34 @@ The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, 
     \end{aligned}
 \end{equation}
 
-\section*{Numerical Part}
 
-\subsection*{Selected Optimization Methods}
+In our problem we only want to minimize the portfolio risk $\sigma_p$.
 
-For solving the Markowitz portfolio optimization problem, we have chosen two numerical optimization methods:
-
-% I want to use non-constraint optimization methods 
-% Fist let's forget about the Expected return constraint
-
-I order to simplify the problem, we will first forget about the expected return constraint. We will only focus on minimizing the portfolio risk $\sigma_p$.
+After modifying the objective function to be unconstrained, we obtain the following problem formulation:
 
 \begin{equation}
     \begin{aligned}
-        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
-        \text{Subject to} \quad & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                        \\
-                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
+        \text{Minimize} \quad   & \sigma_p^2 = \frac{1}{(\sum_{k=1}^{n} e^{x_k})^{2}} \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
     \end{aligned}
 \end{equation}
 
-% To restruct the weight vector to be positive, we can use a variable change
-% w_i = exp(x_i) with x_i \in R
-
-To restruct the weight vector to be positive, we can use a variable change:
-\begin{equation}
-    w_i = e^{x_i} \quad \text{with} \quad x_i \in \mathbb{R}
-\end{equation}
-
-The problem becomes:
-
-\begin{equation}
-    \begin{aligned}
-        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
-        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
-    \end{aligned}
-\end{equation}
-
-We can also forget about the square root in the objective function, as it does not change the optimal solution.
-
-\begin{equation}
-    \begin{aligned}
-        \text{Minimize} \quad   & \sigma_p^2 = \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
-        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
-    \end{aligned}
-\end{equation}
-
-Finally, we can inject the sum constraint into the objective function using a variable change: 
-$x_{n+1} = 1 - \sum_{i=1}^{n} x_i$.
-
-Or we can also use the softmax function to ensure that the sum of the weights equals 1, such as:
+With the variable change:
 
 \begin{equation}
     w_i = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
 \end{equation}
 
-Leading to the following problem formulation (with softmax):
+We also calculate the derivate of the objective function:
 
 \begin{equation}
     \begin{aligned}
-        \text{Minimize} \quad   & \sigma_p^2 = \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i + x_j} \sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
-        \text{Subject to} \quad & x_i \in \mathbb{R} \quad \forall i \in \{1, \ldots, n\} \\
+        \frac{\partial}{\partial x_n} \sigma_p^2 & = \frac{-2 e^{x_n}}{(\sum_{k=1}^{N} e^{x_k})^{3}} \sum_{i=1}^{N}\sum_{j=1}^{N} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} + 2 \sigma_n e^{x_n} \sum_{j=1}^{N} e^{x_j}\sigma_j \rho_{nj} \\
     \end{aligned}
 \end{equation}
+
+\section*{Numerical Part}
+
+\subsection*{Selected Optimization Methods}
 
 
 
@@ -162,6 +128,106 @@ We have applied both methods to the Markowitz portfolio optimization problem and
 To compare the two methods, we analyze factors such as computational time and the number of iterations:
 
 [Insert comparison results]
+
+\section*{Annexe : Objective function and constraints}
+
+\subsection*{Objective function}
+
+For solving the Markowitz portfolio optimization problem, we have chosen two numerical optimization methods:
+
+% I want to use non-constraint optimization methods 
+% Fist let's forget about the Expected return constraint
+
+I order to simplify the problem, we will first forget about the expected return constraint. We will only focus on minimizing the portfolio risk $\sigma_p$.
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                        \\
+                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
+    \end{aligned}
+\end{equation}
+
+% To restruct the weight vector to be positive, we can use a variable change
+% w_i = exp(x_i) with x_i \in R
+
+To restruct the weight vector to be positive, we can use a variable change:
+\begin{equation}
+    w_i = e^{x_i} \quad \text{with} \quad x_i \in \mathbb{R}
+\end{equation}
+
+The problem becomes:
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i} e^{x_j} \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
+    \end{aligned}
+\end{equation}
+
+We can also forget about the square root in the objective function, as it does not change the optimal solution.
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p^2 = \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
+        \text{Subject to} \quad & \sum_{i=1}^{n} e^{x_i} = 1 \quad \text{(Sum of weights equals 1)}    
+    \end{aligned}
+\end{equation}
+
+
+Finally we can use the softmax function to ensure that the sum of the weights equals 1, such as:
+
+\begin{equation}
+    w_i = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
+\end{equation}
+
+Leading to the following problem formulation (with softmax):
+
+\begin{equation}
+    \begin{aligned}
+        \text{Minimize} \quad   & \sigma_p^2 = \frac{1}{(\sum_{k=1}^{n} e^{x_k})^{2}} \sum_{i=1}^{n}\sum_{j=1}^{n} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} \quad \text{(Portfolio risk)} \\
+    \end{aligned}
+\end{equation}
+
+\subsection*{Derivate of the objective function}
+
+Now, let's delve into the derivate of the objective function:
+
+We are going to derive it term by term using the chain rule, we first derive the term outside the sum such as :
+
+\begin{equation}
+    \frac{\partial}{\partial x_n} \frac{1}{(\sum_{k=1}^{N} e^{x_k})^{2}} = \frac{-2 e^{x_n}}{(\sum_{k=1}^{N} e^{x_k})^{3}}
+\end{equation}
+
+Where $N$ is the number of assets in the portfolio and $x_n$ is the variable we are deriving with respect to.
+
+The second term is a bit more complicated, we will use the product rule:
+
+\begin{equation}
+    \frac{\partial}{\partial x_n} \sum_{i=1}^{N}\sum_{j=1}^{N} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} = \sum_{i=1}^{N}\sum_{j=1}^{N}( \frac{\partial}{\partial x_n} e^{x_i} ) e^{x_j}\sigma_i \sigma_j \rho_{ij} + \sum_{i=1}^{N}\sum_{j=1}^{N} e^{x_i}( \frac{\partial}{\partial x_n} e^{x_j} )\sigma_i \sigma_j \rho_{ij} 
+\end{equation}
+
+Because the two terms are similar, we will only focus on the first one:
+We can see that the derivate is not null if $i \neq n$:
+
+\begin{equation}
+    \sum_{i=1}^{N}\sum_{j=1}^{N}( \frac{\partial}{\partial x_n} e^{x_i} ) e^{x_j}\sigma_i \sigma_j \rho_{ij} = \sum_{j=1}^{N} e^{x_n} e^{x_j}\sigma_n \sigma_j \rho_{nj} = \sigma_n e^{x_n} \sum_{j=1}^{N} e^{x_j}\sigma_j \rho_{nj}
+\end{equation}
+
+We can simplify the two sums by using the fact that $\rho_{ij} = \rho_{ji}$ and $\sigma_i \sigma_j = \sigma_j \sigma_i$:
+
+\begin{equation}
+    \frac{\partial}{\partial x_n} \sum_{i=1}^{N}\sum_{j=1}^{N} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} = 2 \sigma_n e^{x_n} \sum_{j=1}^{N} e^{x_j}\sigma_j \rho_{nj}
+\end{equation}
+
+Finally, we can derive the whole objective function:
+
+\begin{equation}
+    \begin{aligned}
+        \frac{\partial}{\partial x_n} \sigma_p^2 & = \frac{-2 e^{x_n}}{(\sum_{k=1}^{N} e^{x_k})^{3}} \sum_{i=1}^{N}\sum_{j=1}^{N} e^{x_i} e^{x_j}\sigma_i \sigma_j \rho_{ij} + 2 \sigma_n e^{x_n} \sum_{j=1}^{N} e^{x_j}\sigma_j \rho_{nj} \\
+    \end{aligned}
+\end{equation}
+
 
 \end{document}
 
