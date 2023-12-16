@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 
 \title{Seminar - Markowitz Portfolio Optimization}
-\author{tets Martin \\ RAMPONT Martin \\ THOMASSIN Pablo \\ STRIEBIG Maximilien}
+\author{PUJOL Martin \\ RAMPONT Martin \\ THOMASSIN Pablo \\ STRIEBIG Maximilien}
 
 \date{\today}
 
@@ -26,30 +26,6 @@ In the realm of financial portfolio management, the Markowitz portfolio optimiza
 
 \subsubsection*{Formalization}
 
-Let:
-\begin{align*}
-    r_i      & : \text{Expected return of asset } i                 \\
-    \sigma_i & : \text{Volatility (risk) of asset } i               \\
-    w_i      & : \text{Weight of asset } i \text{ in the portfolio} \\
-\end{align*}
-
-The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, w_n]$ that maximizes the expected portfolio return $\mu$ while minimizing the portfolio risk $\sigma_p$:
-
-\begin{equation}
-    \begin{aligned}
-        \text{Maximize} \quad   & \mu = \sum_{i=1}^{n} r_i w_i                                                                                     \\
-        \text{Subject to} \quad & \sigma_p = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}} \quad \text{(Portfolio risk)} \\
-                                & \sum_{i=1}^{n} w_i = 1 \quad \text{(Sum of weights equals 1)}                                                    \\
-                                & w_i \geq 0 \quad \text{(Non-negativity constraint)}
-    \end{aligned}
-\end{equation}
-
-Where:
-\begin{align*}
-    \rho_{ij} & : \text{Correlation coefficient between assets } i \text{ and } j
-\end{align*}
-
-
 An other formulation of the problem is to minimize the portfolio risk $\sigma_p$ while achieving a target expected return $\mu$:
 
 The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, w_n]$ that minimizes the portfolio risk $\sigma_p$ while achieving a given expected portfolio return $\mu$:
@@ -65,6 +41,8 @@ The objective is to find the vector of weights $\mathbf{w} = [w_1, w_2, \ldots, 
 
 
 In our problem we only want to minimize the portfolio risk $\sigma_p$.
+
+
 
 After modifying the objective function to be unconstrained, we obtain the following problem formulation:
 
@@ -97,8 +75,8 @@ We also calculate the derivate of the objective function:
 
 
 \begin{enumerate}
-    \item Method 1: [Insert Method 1 Name]
-    \item Method 2: [Insert Method 2 Name]
+    \item Method 1: [Fixed step : Gradient descent]
+    \item Method 2: [Variable step : Golden section search]
 \end{enumerate}
 
 \subsection*{Algorithm Implementation}
@@ -107,7 +85,19 @@ Below are the basic functions describing the two chosen algorithms:
 
 \subsubsection*{Method 1: [Insert Method 1 Name]}
 
-[Insert code or pseudocode for Method 1 implementation]
+% Insert code or pseudocode for Method 1 implementation 
+
+The gradient step method can be formulated as follows:
+
+\begin{equation}
+    x_{k+1} = x_k - \alpha_k \nabla f(x_k)
+\end{equation}
+    
+Where $\alpha_k$ is the step size and $\nabla f(x_k)$ is the gradient of the objective function at $x_k$.
+
+We implemented in the following python code :
+
+
 
 \subsubsection*{Method 2: [Insert Method 2 Name]}
 

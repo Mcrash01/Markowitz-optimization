@@ -1,34 +1,73 @@
 import numpy as np
 
-def f(w,covariance_matrix):
-  return np.matmul(np.matmul(np.transpose(w),covariance_matrix),w)
+# def f(w,covariance_matrix):
+#   return np.matmul(np.matmul(np.transpose(w),covariance_matrix),w)
 
-def grad_f(w,covariance_matrix):
-  return np.matmul(2*np.transpose(w),covariance_matrix)
+# def grad_f(w,covariance_matrix):
+#   return np.matmul(2*np.transpose(w),covariance_matrix)
 
-def descente_markowitz(x0,covariance_matrix,e,p):
+
+def f(w, covariance_matrix):
+    """
+    Portfolio risk objective function.
+    
+    Parameters:
+        w (numpy array): Portfolio weights.
+        covariance_matrix (numpy array): Covariance matrix of asset returns.
+    
+    Returns:
+        float: Portfolio risk.
+    """
+    total_sum = np.sum(np.exp(w))
+    weights = np.exp(w) / total_sum
+    portfolio_risk = 1 / total_sum**2 * np.sum(np.outer(weights, weights) * covariance_matrix)
+    
+    return portfolio_risk
+
+def grad_f(w, covariance_matrix):
+    """
+    Gradient of the portfolio risk objective function.
+    
+    Parameters:
+        w (numpy array): Portfolio weights.
+        covariance_matrix (numpy array): Covariance matrix of asset returns.
+    
+    Returns:
+        numpy array: Gradient of the portfolio risk.
+    """
+    total_sum = np.sum(np.exp(w))
+    weights = np.exp(w) / total_sum
+    
+    first_term = -2 * np.exp(w) / total_sum**3 * np.sum(np.outer(np.exp(w), np.exp(w)) * covariance_matrix)
+    
+    second_term = 2 * np.exp(w) * np.sum(np.outer(weights, covariance_matrix @ weights))
+    
+    gradient = first_term + second_term
+    
+    return gradient
+
+def descente_markowitz(x0,covariance_matrix,e,p, max_iter=10000):
   k = 0
   ek = 2*e
-  while ek>=e :
+  while ek>=e and k<max_iter:
     wk = -1*grad_f(x0,covariance_matrix)
     x0 = x0+p*wk
-    x0 = abs(x0)
     ek = np.linalg.norm(p*wk)
     k+=1
-  return x0/np.sum(x0),k,f(x0,covariance_matrix)
+  return np.exp(x0)/np.sum(np.exp(x0)),k,f(x0,covariance_matrix)
 
 
-def descente2(x0,covariance_matrix,e,method='golden_section'):
+def descente2(x0,covariance_matrix,e,method='golden_section', max_iter=10000):
   k = 0
   ek = 2*e
-  while ek>=e:
+  while ek>=e and k<max_iter:
     wk = -1*grad_f(x0,covariance_matrix)
     p = pk(x0,covariance_matrix,wk,method)
     x0 = (x0+p*wk)
-    x0 = abs(x0)
+    #x0 = abs(x0)
     ek = np.linalg.norm(p*wk)
     k+=1
-  return x0/np.sum(x0),k,f(x0,covariance_matrix)
+  return np.exp(x0)/np.sum(np.exp(x0)),k,f(x0,covariance_matrix)
 
 
 
