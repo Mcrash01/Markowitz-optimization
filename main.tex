@@ -139,6 +139,11 @@ The golden section search method can be formulated as follows:
     
     Where $\alpha_k$ is the step size and $d_k$ is the search direction.
 
+% Explain how alpha_k is calculated in golden section search
+
+The golden section determine the optimal step size $\alpha_k$ by minimizing the objective function along the search direction $d_k$.
+
+
 We implemented in the following python code :
 
 % Insert the funtion descente_markowitz from the file resolution_methods/descente2.py
@@ -232,20 +237,83 @@ We implemented in the following python code :
 
 \end{lstlisting}
 
+\subsection*{Results}
 
-We have applied both methods to the Markowitz portfolio optimization problem and obtained the following results:
+\subsubsection*{Data}
 
-[Insert results, tables, or graphs]
+Using Yahoo Finance, we have downloaded the daily adjusted closing prices of the following assets and then obtain the following covariance matrix:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|ccccc}
+          & AAPL   & AMZN   & GOOGL  & MSFT   & TSLA   \\
+    \hline
+    AAPL  & 0.000341 & 0.000311 & 0.000289 & 0.000267 & 0.000407 \\
+    AMZN  & 0.000311 & 0.000730 & 0.000407 & 0.000364 & 0.000523 \\
+    GOOGL & 0.000289 & 0.000407 & 0.000489 & 0.000316 & 0.000400 \\
+    MSFT  & 0.000267 & 0.000364 & 0.000316 & 0.000381 & 0.000353 \\
+    TSLA  & 0.000407 & 0.000523 & 0.000400 & 0.000353 & 0.001453 \\
+    \end{tabular}
+    \caption{Covariance Matrix}
+    \label{tab:covariance_matrix}
+\end{table}
+
+
+
+\subsubsection*{Research and results}
+
+\subsubsection*{Research and results}
+
+The initial portfolio risk was calculated to be 0.021505979626867473. The initial weights of the assets in the portfolio were as follows:
+
+\begin{itemize}
+    \item AAPL: 0.19058765
+    \item AMZN: 0.14685853
+    \item GOOGL: 0.15496298
+    \item MSFT: 0.22780396
+    \item TSLA: 0.27978688
+\end{itemize}
+
+After running the fixed step descent method for 10000 iterations, the final portfolio risk was reduced to 0.02079916040948402. The final weights of the assets in the portfolio were:
+
+\begin{itemize}
+    \item AAPL: 0.19819201
+    \item AMZN: 0.190089
+    \item GOOGL: 0.19158406
+    \item MSFT: 0.20515562
+    \item TSLA: 0.2149793
+\end{itemize}
+
+Similarly, after running the backtracking method for 10000 iterations, the final portfolio risk was reduced to 0.02081173878844736. The final weights of the assets in the portfolio were:
+
+\begin{itemize}
+    \item AAPL: 0.19793261
+    \item AMZN: 0.18951809
+    \item GOOGL: 0.19105297
+    \item MSFT: 0.2053556
+    \item TSLA: 0.21614072
+\end{itemize}
 
 \subsubsection*{Interpretation}
 
-[Provide interpretation of the results]
 
-\subsubsection*{Comparison}
+\subsubsection*{Interpretation}
 
-To compare the two methods, we analyze factors such as computational time and the number of iterations:
+Both the fixed step and backtracking methods were used to optimize the portfolio weights with the goal of minimizing portfolio risk. The initial portfolio risk was 0.021505979626867473. 
 
-[Insert comparison results]
+After 10000 iterations, the fixed step method reduced the portfolio risk to 0.02079916040948402, while the backtracking method reduced it to 0.02081173878844736. The results are very close, indicating that both methods are effective at reducing portfolio risk. 
+
+However, the fixed step method resulted in a slightly lower portfolio risk than the backtracking method. This suggests that the fixed step method may be slightly more effective at optimizing portfolio weights to minimize risk. 
+
+It is also important to note that the variable step method required more iterations to reach the final portfolio risk. This is because the step size is calculated at each iteration, which requires more computation. 
+
+The fact that the variable step is supposed to be more efficient than the fixed step method is not reflected in the results. This may be due to the fact that the fixed step method is already very efficient at reducing the portfolio risk and the golden section search need more iterations to converge.
+
+In terms of the final portfolio weights, both methods resulted in similar weights for each asset. This indicates that both methods are consistent in their optimization process. 
+
+It's important to note that the effectiveness of these methods can depend on the specific characteristics of the portfolio and the market conditions. Therefore, it's recommended to use a combination of methods and to continually monitor and adjust the portfolio weights as necessary.
+
+
 
 \section*{Annexe : Objective function and constraints}
 
