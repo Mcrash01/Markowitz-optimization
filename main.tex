@@ -1,7 +1,9 @@
 % create a basic latex article
 
 \documentclass[12pt]{article}
+% Add library to import python code from a file and shwo it 
 
+\usepackage{listings}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -70,8 +72,7 @@ We also calculate the derivate of the objective function:
 
 \subsection*{Selected Optimization Methods}
 
-
-
+We have chosen to implement two different numerical optimization methods to solve the Markowitz portfolio optimization problem:
 
 
 \begin{enumerate}
@@ -83,27 +84,154 @@ We also calculate the derivate of the objective function:
 
 Below are the basic functions describing the two chosen algorithms:
 
-\subsubsection*{Method 1: [Insert Method 1 Name]}
+\subsubsection*{Method 1: [Fixed step : Gradient descent]}
 
 % Insert code or pseudocode for Method 1 implementation 
 
 The gradient step method can be formulated as follows:
 
 \begin{equation}
-    x_{k+1} = x_k - \alpha_k \nabla f(x_k)
+    x_{k+1} = x_k - \alpha \nabla f(x_k)
 \end{equation}
     
 Where $\alpha_k$ is the step size and $\nabla f(x_k)$ is the gradient of the objective function at $x_k$.
 
 We implemented in the following python code :
 
+% Insert the funtion descente_markowitz from resolution_methods/fixed_step_descent.py
+
+\begin{lstlisting}[language=Python]
+    def descente_markowitz(x0,covariance_matrix,e,p, max_iter=10000):
+        """ 
+        Gradient descent algorithm to minimize the portfolio risk.
+
+        Parameters:
+            x0 (numpy array): Initial portfolio weights.
+            covariance_matrix (numpy array): Covariance matrix of asset returns.
+            e (float): Tolerance for the stopping criterion.
+            p (float): Step size.
+            max_iter (int): Maximum number of iterations.
+
+        Returns:
+            numpy array: Optimal portfolio weights.
+            int: Number of iterations.
+            float: Portfolio risk.
+        """
+        k = 0
+        ek = 2*e
+        while ek>=e and k<max_iter:
+            wk = -1*grad_f(x0,covariance_matrix)
+            x0 = x0+p*wk
+            ek = np.linalg.norm(p*wk)
+            k+=1
+        return np.exp(x0)/np.sum(np.exp(x0)),k,f(x0,covariance_matrix)
+\end{lstlisting}
 
 
-\subsubsection*{Method 2: [Insert Method 2 Name]}
 
-[Insert code or pseudocode for Method 2 implementation]
+\subsubsection*{Method 2: [Variable step : Golden section search]}
 
-\subsection*{Results and Analysis}
+The golden section search method can be formulated as follows:
+
+\begin{equation}
+    x_{k+1} = x_k + \alpha_k d_k
+\end{equation}
+    
+    Where $\alpha_k$ is the step size and $d_k$ is the search direction.
+
+We implemented in the following python code :
+
+% Insert the funtion descente_markowitz from the file resolution_methods/descente2.py
+
+\begin{lstlisting}[language=Python]
+    def descente2(x0,covariance_matrix,e,method='golden_section', max_iter=10000):
+        """
+        Golden section algorithm to minimize the portfolio risk.
+
+        Parameters:
+            x0 (numpy array): Initial portfolio weights.
+            covariance_matrix (numpy array): Covariance matrix of asset returns.
+            e (float): Tolerance for the stopping criterion.
+            method (str): Line search method.
+            max_iter (int): Maximum number of iterations.
+            
+        Returns:
+            numpy array: Optimal portfolio weights.
+            int: Number of iterations.
+            float: Portfolio risk.
+        """
+        k = 0
+        ek = 2*e
+        while ek>=e and k<max_iter:
+            wk = -1*grad_f(x0,covariance_matrix)
+            p = pk(x0,covariance_matrix,wk,method)
+            x0 = (x0+p*wk)
+            ek = np.linalg.norm(p*wk)
+            k+=1
+        return np.exp(x0)/np.sum(np.exp(x0)),k,f(x0,covariance_matrix)
+
+        def pk(x,covariance_matrix, wk, method='golden_section'):
+        """
+        Line search to find the optimal step size.
+    
+        Parameters:
+            x (numpy array): Portfolio weights.
+            covariance_matrix (numpy array): Covariance matrix of asset returns.
+            wk (numpy array): Negative gradient of the portfolio risk.
+            method (str): Line search method.
+    
+        Returns:
+            float: Optimal step size.
+        """
+    
+    
+        if method == 'golden_section':
+    
+            alpha = golden_section_line_search(x,covariance_matrix, wk)
+    
+        else:
+    
+            alpha = wolfe_conditions_line_search(x, wk)
+    
+        return alpha
+    
+    def golden_section_line_search(x,covariance_matrix, wk, c1=1e-4, max_iter=100):
+        """
+        Golden section line search to find the optimal step size.
+        
+        Parameters:
+            x (numpy array): Portfolio weights.
+            covariance_matrix (numpy array): Covariance matrix of asset returns.
+            wk (numpy array): Negative gradient of the portfolio risk.
+            c1 (float): Parameter for the stopping criterion.
+            max_iter (int): Maximum number of iterations.
+            
+            Returns:
+            float: Optimal step size.
+            """
+        a = 0.0
+        b = 1.0
+        tau = 0.618
+    
+        for _ in range(max_iter):
+            alpha1 = a + (1 - tau) * (b - a)
+            alpha2 = a + tau * (b - a)
+    
+            f1 = f(x+ alpha1* wk,covariance_matrix)
+            f2 = f(x +alpha2* wk,covariance_matrix)
+    
+            if f2 > f1:
+                b = alpha2
+            else:
+                a = alpha1
+    
+            if abs(alpha2 - alpha1) < c1:
+                break
+    
+        return (alpha1 + alpha2) / 2.0
+
+\end{lstlisting}
+
 
 We have applied both methods to the Markowitz portfolio optimization problem and obtained the following results:
 

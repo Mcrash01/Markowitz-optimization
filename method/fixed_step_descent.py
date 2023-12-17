@@ -47,6 +47,21 @@ def grad_f(w, covariance_matrix):
     return gradient
 
 def descente_markowitz(x0,covariance_matrix,e,p, max_iter=10000):
+  """ 
+  Gradient descent algorithm to minimize the portfolio risk.
+
+  Parameters:
+      x0 (numpy array): Initial portfolio weights.
+      covariance_matrix (numpy array): Covariance matrix of asset returns.
+      e (float): Tolerance for the stopping criterion.
+      p (float): Step size.
+      max_iter (int): Maximum number of iterations.
+
+  Returns:
+      numpy array: Optimal portfolio weights.
+      int: Number of iterations.
+      float: Portfolio risk.
+  """
   k = 0
   ek = 2*e
   while ek>=e and k<max_iter:
@@ -58,13 +73,27 @@ def descente_markowitz(x0,covariance_matrix,e,p, max_iter=10000):
 
 
 def descente2(x0,covariance_matrix,e,method='golden_section', max_iter=10000):
+  """
+  Golden section algorithm to minimize the portfolio risk.
+
+  Parameters:
+      x0 (numpy array): Initial portfolio weights.
+      covariance_matrix (numpy array): Covariance matrix of asset returns.
+      e (float): Tolerance for the stopping criterion.
+      method (str): Line search method.
+      max_iter (int): Maximum number of iterations.
+    
+  Returns:
+      numpy array: Optimal portfolio weights.
+      int: Number of iterations.
+      float: Portfolio risk.
+  """
   k = 0
   ek = 2*e
   while ek>=e and k<max_iter:
     wk = -1*grad_f(x0,covariance_matrix)
     p = pk(x0,covariance_matrix,wk,method)
     x0 = (x0+p*wk)
-    #x0 = abs(x0)
     ek = np.linalg.norm(p*wk)
     k+=1
   return np.exp(x0)/np.sum(np.exp(x0)),k,f(x0,covariance_matrix)
@@ -72,6 +101,19 @@ def descente2(x0,covariance_matrix,e,method='golden_section', max_iter=10000):
 
 
 def pk(x,covariance_matrix, wk, method='golden_section'):
+    """
+    Line search to find the optimal step size.
+
+    Parameters:
+        x (numpy array): Portfolio weights.
+        covariance_matrix (numpy array): Covariance matrix of asset returns.
+        wk (numpy array): Negative gradient of the portfolio risk.
+        method (str): Line search method.
+
+    Returns:
+        float: Optimal step size.
+    """
+
 
     if method == 'golden_section':
 
@@ -84,6 +126,19 @@ def pk(x,covariance_matrix, wk, method='golden_section'):
     return alpha
 
 def golden_section_line_search(x,covariance_matrix, wk, c1=1e-4, max_iter=100):
+    """
+    Golden section line search to find the optimal step size.
+    
+    Parameters:
+        x (numpy array): Portfolio weights.
+        covariance_matrix (numpy array): Covariance matrix of asset returns.
+        wk (numpy array): Negative gradient of the portfolio risk.
+        c1 (float): Parameter for the stopping criterion.
+        max_iter (int): Maximum number of iterations.
+        
+        Returns:
+        float: Optimal step size.
+        """
     a = 0.0
     b = 1.0
     tau = 0.618
