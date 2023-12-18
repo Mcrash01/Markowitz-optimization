@@ -94,7 +94,7 @@ The gradient step method can be formulated as follows:
     x_{k+1} = x_k - \alpha \nabla f(x_k)
 \end{equation}
     
-Where $\alpha_k$ is the step size and $\nabla f(x_k)$ is the gradient of the objective function at $x_k$.
+Where $\alpha$ is the step size and $\nabla f(x_k)$ is the gradient of the objective function at $x_k$.
 
 We implemented in the following python code :
 
@@ -237,9 +237,9 @@ We implemented in the following python code :
 
 \end{lstlisting}
 
-\subsection*{Results}
+\section*{Results}
 
-\subsubsection*{Data}
+\subsection*{Data}
 
 Using Yahoo Finance, we have downloaded the daily adjusted closing prices of the following assets and then obtain the following covariance matrix:
 
@@ -259,10 +259,7 @@ Using Yahoo Finance, we have downloaded the daily adjusted closing prices of the
 \end{table}
 
 
-
-\subsubsection*{Research and results}
-
-\subsubsection*{Research and results}
+\subsection*{Research and results}
 
 The initial portfolio risk was calculated to be 0.021505979626867473. The initial weights of the assets in the portfolio were as follows:
 
@@ -294,10 +291,9 @@ Similarly, after running the backtracking method for 10000 iterations, the final
     \item TSLA: 0.21614072
 \end{itemize}
 
-\subsubsection*{Interpretation}
 
 
-\subsubsection*{Interpretation}
+\subsection*{Interpretation}
 
 Both the fixed step and backtracking methods were used to optimize the portfolio weights with the goal of minimizing portfolio risk. The initial portfolio risk was 0.021505979626867473. 
 
